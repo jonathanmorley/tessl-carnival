@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { transformPoint } from './mat4';
 import { MeshBuilder, VERTEX_FLOATS } from './mesh';
 import { startMidway3d } from './midway3d';
-import { PLAYER_LOOK } from './render';
+import { GATE_SIGN, PLAYER_LOOK } from './render';
 import {
   beam,
   boothPromptAt,
@@ -34,6 +34,11 @@ describe('buildScene', () => {
     // A game without a name falls back to its id.
     expect(text('hook-a-duck')).toBe('hook-a-duck');
     expect(text(undefined)).toBe('Coming soon');
+  });
+
+  it('paints the gate with the same words as the 2D map', () => {
+    const texts = scene.parts.flatMap((p) => (p.texture?.kind === 'sign' ? [p.texture.text] : []));
+    expect(texts).toContain(GATE_SIGN);
   });
 
   it('makes every part whole triangles of finite numbers', () => {

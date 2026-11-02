@@ -17,6 +17,7 @@ import {
   BLUE,
   BOOTH_SCHEMES,
   CLOSED_SCHEME,
+  GATE_SIGN,
   GOLD,
   RED,
   TENT_COLORS,
@@ -997,7 +998,7 @@ function arch(b: MeshBuilder, map: MidwayMap, parts: Part[]) {
       {
         texture: {
           kind: 'sign',
-          text: 'TESSL CARNIVAL',
+          text: GATE_SIGN,
           board: palette.wood,
           edge: palette.woodDark,
           ink: palette.gold,

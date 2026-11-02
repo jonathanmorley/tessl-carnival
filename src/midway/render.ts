@@ -1629,6 +1629,9 @@ export function drawWalker(ctx: Ctx, walker: Walker, look: Look, player = false,
 
 // ── The gate ──────────────────────────────────────────────────────────────
 
+/** The words on the entrance sign, on both the 2D map and the 3D midway. */
+export const GATE_SIGN = 'TESSL CARNIVAL';
+
 const ARCH_HEIGHT = 58;
 const ARCH_LEFT = -0.45;
 const ARCH_RIGHT = 2.2;
@@ -1667,7 +1670,7 @@ export function drawArch(ctx: Ctx, map: MidwayMap, t: number) {
     ctx.beginPath();
     ctx.ellipse(0, -10, 12, 9, 0, Math.PI, Math.PI * 2);
     ctx.fill();
-    signBoard(ctx, 'TESSL CARNIVAL', 92, 20, {
+    signBoard(ctx, GATE_SIGN, 92, 20, {
       board: palette.wood,
       edge: palette.woodDark,
       text: palette.gold,
