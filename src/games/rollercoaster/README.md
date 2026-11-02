@@ -25,6 +25,7 @@ Your final score is saved to the carnival's score board when the ride ends.
 ## Files
 
 - `game.ts`: the game logic (`createState`, `setBoost`, `step`, `trackHeight`,
-  `trackSlope`, `scoreForCrest`) and the `rollercoaster` entry, the default
-  export the midway finds.
-- `game.test.ts`: tests for the game logic.
+  `trackSlope`, `scoreForCrest`), the drawing maths (`trackPoint`, `trailingX`,
+  `trainPositions`, `armsUp`, `parallaxShift`, `starField`), the drawing itself,
+  and the `rollercoaster` entry, the default export the midway finds.
+- `game.test.ts`: tests for the game logic and the drawing maths.
