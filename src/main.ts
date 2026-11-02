@@ -2,6 +2,7 @@ import './style.css';
 import { applyTheme, bestScore, type CarnivalGame } from './carnival';
 import { registry } from './games';
 import { startMidway } from './midway/midway';
+import { startMidway3d } from './midway/midway3d';
 import type { BoothSlot } from './midway/world';
 import { carnivalLink, REPO_URL, shareLinks } from './share';
 
@@ -20,10 +21,7 @@ function renderMidway() {
   app.innerHTML = `
     <section class="midway">
       <canvas class="midway-map" aria-label="The carnival midway. Walk up to a booth to play its game."></canvas>
-      <p class="midway-help">
-        <kbd>WASD</kbd> or <kbd>arrows</kbd> to walk, or click where you want to go.
-        <kbd>E</kbd> to play.
-      </p>
+      <p class="midway-help"></p>
       <p class="midway-credit">
         Built with
         <a href="https://tessl.io/?utm_source=carnival&amp;utm_medium=midway-credit&amp;utm_campaign=tessl-carnival" target="_blank" rel="noopener">Tessl</a>
@@ -82,12 +80,36 @@ function renderMidway() {
     if (game) link.href = `#/play/${game.id}`;
   };
 
-  const midway = startMidway(app.querySelector('canvas')!, {
+  let canvas = app.querySelector('canvas')!;
+  const options = {
     games: registry.all(),
-    onPlay: (gameId) => (location.hash = `#/play/${gameId}`),
+    onPlay: (gameId: string) => (location.hash = `#/play/${gameId}`),
     onReach: showBooth,
-  });
-  stop = midway.stop;
+  };
+  // Walk the midway in 3D, or on the 2D map where the browser can't do WebGL.
+  let midway3d: ReturnType<typeof startMidway3d>;
+  try {
+    midway3d = startMidway3d(canvas, options);
+  } catch (error) {
+    // A canvas that has a WebGL context can't draw 2D, so swap in a fresh one.
+    console.error('The 3D midway failed to start; showing the 2D map instead.', error);
+    const fresh = canvas.cloneNode() as HTMLCanvasElement;
+    canvas.replaceWith(fresh);
+    canvas = fresh;
+  }
+  const help = app.querySelector('.midway-help')!;
+  if (midway3d) {
+    canvas.setAttribute(
+      'aria-label',
+      'The carnival midway in 3D. Walk up to a booth to play its game.',
+    );
+    help.innerHTML = `<kbd>WASD</kbd> to walk, <kbd>←</kbd> <kbd>→</kbd> or drag to look around,
+      or click where you want to go. <kbd>E</kbd> to play.`;
+  } else {
+    help.innerHTML = `<kbd>WASD</kbd> or <kbd>arrows</kbd> to walk, or click where you want to go.
+      <kbd>E</kbd> to play.`;
+  }
+  stop = (midway3d ?? startMidway(canvas, options)).stop;
 }
 
 function renderGame(game: CarnivalGame) {

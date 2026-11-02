@@ -363,32 +363,32 @@ export function drawFrontHedge(ctx: Ctx, map: MidwayMap) {
 
 // ── Round things: tents, the big top, the carousel ────────────────────────
 
-interface Stripes {
+export interface Stripes {
   a: string;
   aShade: string;
   b: string;
   bShade: string;
 }
 
-const RED: Stripes = {
+export const RED: Stripes = {
   a: palette.red,
   aShade: palette.redShade,
   b: palette.cream,
   bShade: palette.creamShade,
 };
-const GOLD: Stripes = {
+export const GOLD: Stripes = {
   a: palette.gold,
   aShade: palette.goldShade,
   b: palette.cream,
   bShade: palette.creamShade,
 };
-const BLUE: Stripes = {
+export const BLUE: Stripes = {
   a: palette.blue,
   aShade: palette.blueShade,
   b: palette.cream,
   bShade: palette.creamShade,
 };
-const TENT_COLORS = [GOLD, BLUE, BLUE, RED] as const;
+export const TENT_COLORS = [GOLD, BLUE, BLUE, RED] as const;
 
 function rimPoint(c: Pt, r: number, angle: number, z: number): Pt {
   return [c[0] + Math.cos(angle) * r * ISO_RX, c[1] + Math.sin(angle) * r * ISO_RY - z];
@@ -1341,7 +1341,7 @@ function ferrisWheel(ctx: Ctx, prop: Prop, t: number) {
 
 // ── Booths ────────────────────────────────────────────────────────────────
 
-const BOOTH_SCHEMES = [
+export const BOOTH_SCHEMES = [
   {
     wall: palette.gold,
     wallShade: palette.goldShade,
@@ -1367,7 +1367,7 @@ const BOOTH_SCHEMES = [
     awningShade: [palette.redShade, palette.goldShade],
   },
 ] as const;
-const CLOSED_SCHEME = {
+export const CLOSED_SCHEME = {
   wall: palette.closed,
   wallShade: palette.closedShade,
   awning: [palette.closed, palette.metal],

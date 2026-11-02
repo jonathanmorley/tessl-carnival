@@ -77,8 +77,8 @@ DeepMind, Meta, Netlify, Thoughtworks and Docker.
 ## The carnival
 
 The carnival is a small browser game. It ships with one game, the **water
-cannon**, and a midway you walk around: a sunny fairground with tents, rides and
-a booth for every game. Empty booths say "coming soon" until a game fills them.
+cannon**, and a 3D midway you walk through: a sunny fairground with tents, rides
+and a booth for every game. Empty booths say "coming soon" until a game fills them.
 
 You grow your carnival by adding games through your factory. Each game lives in
 its own folder, and the midway finds it there, so a new game touches no shared
@@ -93,8 +93,8 @@ session with a different carnival.
    down, deploys the carnival, and prints your Pages link.
 3. **Play** at your Pages link,
    `https://<your-username>.github.io/tessl-carnival/`. Walk up to the water
-   cannon booth and press **E**. Walk with WASD or the arrow keys, or click
-   where you want to go.
+   cannon booth and press **E**. Walk with WASD, look around with the arrow
+   keys or by dragging, or click where you want to go.
 
 Every merge to `main` redeploys your carnival, so your factory's work shows up
 at the same link.
@@ -219,12 +219,14 @@ Show people where yours went:
 
 ## How it's built
 
-TypeScript, Vite and plain HTML canvas, with Vitest for the game logic. No UI
+TypeScript, Vite and plain HTML canvas (WebGL for the 3D midway, with no 3D
+library), with Vitest for the game logic. No UI
 framework and no native dependencies, so `npm ci` is the whole setup.
 
 - `index.html` and `src/main.ts`: the page and the router.
-- `src/midway/`: the walkable midway. Every registered game gets a booth along
-  the avenue.
+- `src/midway/`: the walkable midway, in first-person 3D, or as a 2D map where
+  the browser can't do WebGL. Every registered game gets a booth along the
+  avenue.
 - `src/carnival/`: the shared base every game uses: the game registry, scores,
   prizes and theme.
 - `src/games/<game-id>/`: one folder per game. The water cannon is the pattern

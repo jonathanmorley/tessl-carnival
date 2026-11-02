@@ -1,8 +1,8 @@
 # Tessl Carnival: agent guide
 
 A small browser carnival. The midway (`index.html`, `src/main.ts`,
-`src/midway/`) is a walkable isometric map with a booth for every game; each
-game lives in its own folder under `src/games/`.
+`src/midway/`) is a fairground you walk through in first-person 3D, with a
+booth for every game; each game lives in its own folder under `src/games/`.
 
 ## The workshop
 
@@ -23,7 +23,8 @@ fork, not to everyone who forks this repository.
 
 ## Stack
 
-- TypeScript, Vite and plain HTML canvas. No UI framework.
+- TypeScript, Vite and plain HTML canvas. No UI framework. The 3D midway uses
+  WebGL directly, with no 3D library.
 - Vitest for game logic. No browser tests: they need system packages the cloud
   machine doesn't have.
 - Scores live in the browser (local storage) behind `src/carnival/scores.ts`.
@@ -58,12 +59,15 @@ docs/jit-board-queue.md   the design for the workshop's advanced stretch
 tessl-factory/skills/     sample skills for maintenance loops
 src/
   main.ts                 the router (#/play/<game-id>) and the midway's overlay
-  midway/                 the walkable midway map
+  midway/                 the walkable midway
     world.ts              layout, movement and pathfinding (plain functions)
     world.test.ts
-    render.ts             drawing the scenery, booths and people
+    midway3d.ts           the 3D midway: WebGL, input and the animation loop
+    scene3d.ts            the 3D scenery, booths and people, built from the map
+    view3d.ts             the first-person camera, movement and clicks
+    mesh.ts, mat4.ts      building meshes, and the matrix maths for them
     palette.ts            the map's scenery colours, built on the theme
-    midway.ts             input, camera and the animation loop
+    midway.ts, render.ts  the 2D map, used where the browser can't do WebGL
   carnival/               shared base every game uses
     registry.ts           the CarnivalGame shape and the registry
     scores.ts             recordScore, bestScore, topScores
@@ -79,8 +83,10 @@ src/
 
 ## The midway
 
-The midway is a walkable map, drawn on a 2D canvas, with a booth for every game
-that `src/games/index.ts` finds.
+The midway is a fairground you walk through in first-person 3D, with a booth for
+every game that `src/games/index.ts` finds. It's drawn with WebGL, straight from
+the same map layout the 2D midway uses; where WebGL isn't available, `main.ts`
+falls back to the 2D map.
 
 - A new game gets its booth automatically when its folder has a `game.ts` with a
   default export. Adding a game never needs a change in `src/midway/` or
@@ -88,8 +94,10 @@ that `src/games/index.ts` finds.
 - The text around the map lives in `src/main.ts`: the booth card that opens when
   you walk up to a booth, and the list of booths in the corner. Changes to what
   the midway shows about a game, such as scores, usually go there.
-- `src/midway/` is the map itself: layout, movement and drawing. Keep it plain 2D
-  canvas so it stays fast on slow laptops.
+- `src/midway/` is the map itself: layout, movement and drawing. Keep the 3D
+  midway low-poly, with everything that never moves in one mesh and no 3D
+  library, so it stays fast on slow laptops. A change to the layout in `world.ts` shows up in
+  both the 3D midway and the 2D fallback.
 
 ## House rules
 
