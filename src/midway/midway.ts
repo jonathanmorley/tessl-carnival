@@ -149,8 +149,12 @@ export function startMidway(canvas: HTMLCanvasElement, options: MidwayOptions): 
   const keys = new Set<string>();
   const isControl = (target: EventTarget | null) =>
     target instanceof HTMLElement && target.closest('a, button, input, textarea, select') !== null;
+  const isTyping = (target: EventTarget | null) =>
+    target instanceof HTMLElement &&
+    (target.isContentEditable || target.closest('input, textarea, select') !== null);
   const onKeyDown = (event: KeyboardEvent) => {
-    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    // Typing in the booth card shouldn't walk you away from it.
+    if (event.metaKey || event.ctrlKey || event.altKey || isTyping(event.target)) return;
     if (event.code in MOVE_KEYS) {
       keys.add(event.code);
       player.path = [];

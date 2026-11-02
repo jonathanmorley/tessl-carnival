@@ -4,7 +4,14 @@ import { registry } from './games';
 import { startMidway } from './midway/midway';
 import { startMidway3d } from './midway/midway3d';
 import type { BoothSlot } from './midway/world';
-import { carnivalLink, REPO_URL, shareLinks } from './share';
+import {
+  carnivalLink,
+  forkRepo,
+  MAX_IDEA_LENGTH,
+  REPO_URL,
+  shareLinks,
+  suggestGameLink,
+} from './share';
 
 applyTheme();
 
@@ -46,6 +53,14 @@ function renderMidway() {
         <p class="description"></p>
         <p class="best"></p>
         <a class="play">Play</a>
+        <form class="suggest" hidden>
+          <label for="suggest-idea">Got a game for this booth?</label>
+          <div class="suggest-row">
+            <input id="suggest-idea" name="idea" maxlength="${MAX_IDEA_LENGTH}" autocomplete="off" placeholder="A ring toss with moving bottles" />
+            <button type="submit">Suggest it</button>
+          </div>
+          <p class="suggest-note">Opens an issue on GitHub for this carnival's factory to build.</p>
+        </form>
       </div>
     </section>`;
 
@@ -67,6 +82,15 @@ function renderMidway() {
   }
 
   const card = app.querySelector<HTMLElement>('.booth-card')!;
+  const repo = forkRepo(location.href);
+  const suggest = card.querySelector<HTMLFormElement>('.suggest')!;
+  suggest.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!repo) return;
+    const idea = new FormData(suggest).get('idea');
+    window.open(suggestGameLink(repo, typeof idea === 'string' ? idea : ''), '_blank', 'noopener');
+    suggest.reset();
+  });
   const showBooth = (booth: BoothSlot | undefined) => {
     const game = booth?.gameId ? registry.get(booth.gameId) : undefined;
     card.hidden = booth === undefined;
@@ -78,6 +102,8 @@ function renderMidway() {
     const link = card.querySelector<HTMLAnchorElement>('.play')!;
     link.hidden = !game;
     if (game) link.href = `#/play/${game.id}`;
+    // Empty booths ask for a game, where we know which repository to ask.
+    suggest.hidden = !(booth && !game && repo);
   };
 
   let canvas = app.querySelector('canvas')!;
