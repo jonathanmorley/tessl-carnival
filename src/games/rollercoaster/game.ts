@@ -22,9 +22,9 @@ const GROUND_Y = HEIGHT - 60;
 const CAR_SCREEN_X = 220;
 
 export interface RollercoasterState {
-  /** Distance along the track, in pixels. */
+  /** Horizontal position on the track, in pixels. */
   x: number;
-  /** Pixels per second along the track. */
+  /** Horizontal speed, in pixels per second. */
   speed: number;
   /** Whether the launch motor is on. */
   boosting: boolean;
@@ -233,9 +233,8 @@ export const rollercoaster: CarnivalGame = {
       if (state.phase === 'over') {
         state = createState();
         scoreRecorded = false;
-      } else {
-        setBoost(state, true);
       }
+      setBoost(state, true);
     };
     const onUp = () => setBoost(state, false);
     const onKeyDown = (event: KeyboardEvent) => {
@@ -250,6 +249,8 @@ export const rollercoaster: CarnivalGame = {
     window.addEventListener('pointerup', onUp);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
+    // A release in another window never reaches this one, so let go on blur.
+    window.addEventListener('blur', onUp);
 
     let frame = 0;
     let last = performance.now();
@@ -273,6 +274,7 @@ export const rollercoaster: CarnivalGame = {
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('blur', onUp);
     };
   },
 };
