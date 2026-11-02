@@ -245,6 +245,54 @@ kbd {
   display: none;
 }
 
+.suggest[hidden] {
+  display: none;
+}
+
+.suggest label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.suggest-row {
+  display: flex;
+  gap: 8px;
+}
+
+.suggest input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 2px solid var(--color-muted);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.suggest input:focus-visible {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.suggest button {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-background);
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.suggest-note {
+  margin: 8px 0 0;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
 @media (max-width: 720px) {
   .midway-help,
   .midway-credit {
