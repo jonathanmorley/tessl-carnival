@@ -1,0 +1,18 @@
+{
+  "name": "Games draw with the carnival theme",
+  "instruction": "Game code takes every colour and font from theme and canvasFont in src/carnival/theme.ts, never from its own hex colours or font strings.",
+  "relevant_when": "A game's game.ts file under src/games/<game-id>/ that draws on a canvas, for example by setting ctx.fillStyle, ctx.strokeStyle or ctx.font.",
+  "context": "AGENTS.md house rule 3: every game draws with the carnival's theme so every booth on the midway looks like it belongs. Colours, fonts and sizes come from theme and canvasFont.",
+  "scope": "file",
+  "scope_reason": "Every colour and font a game uses appears as a literal or a theme reference in its own game.ts.",
+  "checklist": [
+    {
+      "name": "no-literal-colours",
+      "rule": "The file contains no colour literals such as '#4fc3f7', 'rgb(...)', 'rgba(...)', 'hsl(...)' or CSS colour names like 'red' assigned to fillStyle, strokeStyle, shadowColor or a gradient stop. Colours come from theme.colors. Pass when every colour is a theme.colors reference or a variable derived from one."
+    },
+    {
+      "name": "no-literal-fonts",
+      "rule": "Every value assigned to ctx.font comes from canvasFont(...) or theme.font, not from a hand-written font string such as 'bold 20px sans-serif'. Not applicable when the file never sets ctx.font."
+    }
+  ]
+}

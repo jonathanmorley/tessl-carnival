@@ -1,0 +1,12 @@
+{
+  "name": "tessl-carnival",
+  "verify": {
+    "groups": {
+      "games": {
+        "path": "verifiers/*.json",
+        "level": "error",
+        "include": ["src/games/*/game.ts"]
+      }
+    }
+  }
+}
