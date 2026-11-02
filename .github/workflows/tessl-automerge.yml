@@ -1,0 +1,50 @@
+name: Merge Tessl pull requests
+
+# When CI passes on a pull request that Tessl opened, merge it without waiting
+# for an approval, then deploy the carnival.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  merge:
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+    steps:
+      - name: Merge the pull request if Tessl opened it
+        id: merge
+        run: |
+          pr=$(gh api "repos/$GH_REPO/pulls?state=open&head=${GH_REPO%%/*}:$HEAD_BRANCH" \
+            --jq '[.[] | select(.user.login == "tessl-app[bot]")
+                       | select(any(.labels[]; .name == "tessl"))
+                       | select(.draft | not)
+                       | .number] | first // empty')
+          if [ -z "$pr" ]; then
+            echo "No open, labelled Tessl pull request for $HEAD_BRANCH. Nothing to merge."
+            exit 0
+          fi
+          # --match-head-commit refuses the merge if commits landed after the
+          # ones CI just checked.
+          gh pr merge "$pr" --squash --match-head-commit "$HEAD_SHA"
+          echo "merged=true" >> "$GITHUB_OUTPUT"
+
+      # A merge made with the workflow's token doesn't trigger push workflows,
+      # so start the Pages deploy by hand.
+      - name: Deploy to GitHub Pages
+        if: steps.merge.outputs.merged == 'true'
+        run: gh workflow run pages.yml --ref "${{ github.event.repository.default_branch }}"
