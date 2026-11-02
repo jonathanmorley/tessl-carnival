@@ -1,0 +1,18 @@
+{
+  "name": "Games report scores through the shared scores module",
+  "instruction": "A game records its score by calling recordScore(game.id, score) from src/carnival once when a round ends, and never touches browser storage or keeps its own high score table.",
+  "relevant_when": "A game's game.ts file under src/games/<game-id>/ that defines a CarnivalGame.",
+  "context": "AGENTS.md house rule 2: scores live in local storage behind src/carnival/scores.ts, so the midway can show every game's scores the same way. A game that writes storage itself, or records a score every frame, breaks the shared score board.",
+  "scope": "file",
+  "scope_reason": "The game's start function and its game logic live in game.ts, so one file shows how and when the score is recorded.",
+  "checklist": [
+    {
+      "name": "no-direct-storage",
+      "rule": "The file does not read or write localStorage, sessionStorage, indexedDB or document.cookie, and keeps no high score or best score table of its own."
+    },
+    {
+      "name": "records-once-per-round",
+      "rule": "The file calls recordScore with the game's id (for example myGame.id) and the round's score, guarded so it runs once when a round ends (for example behind a flag reset when a new round starts), not on every frame."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "A game's start function cleans up after itself",
+  "instruction": "The function returned by a CarnivalGame's start cancels its animation frame and removes every listener that start added.",
+  "relevant_when": "A game's game.ts file under src/games/<game-id>/ whose start function calls addEventListener, requestAnimationFrame, setTimeout or setInterval.",
+  "context": "AGENTS.md house rule 5. The midway starts and stops games as people walk between booths, so a listener or frame left behind keeps running against a game that is gone. Review of the rollercoaster (PR #2) also found input that could stay latched when a release never arrived.",
+  "scope": "file",
+  "scope_reason": "start and the cleanup function it returns are in the same file, so every add and remove can be matched by reading it.",
+  "checklist": [
+    {
+      "name": "listeners-removed",
+      "rule": "For every addEventListener call made in start, the returned cleanup function calls removeEventListener on the same target, with the same event type and the same handler reference."
+    },
+    {
+      "name": "frames-and-timers-cancelled",
+      "rule": "If start calls requestAnimationFrame, the cleanup calls cancelAnimationFrame with the latest frame id; if start calls setTimeout or setInterval, the cleanup clears them. Not applicable when start schedules none of these."
+    }
+  ]
+}

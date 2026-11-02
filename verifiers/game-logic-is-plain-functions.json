@@ -1,0 +1,18 @@
+{
+  "name": "Game logic is testable without a browser",
+  "instruction": "A game keeps its state changes (scoring, moving, hits) in plain exported functions, and only start touches the canvas, the DOM, window or requestAnimationFrame.",
+  "relevant_when": "A game's game.ts file under src/games/<game-id>/ that defines a CarnivalGame.",
+  "context": "AGENTS.md house rule 4. The repo has no browser tests, so game.test.ts can only cover logic that runs in Node. State changes hidden inside start or an event handler cannot be tested.",
+  "scope": "file",
+  "scope_reason": "The exported logic functions and start live in the same game.ts, so one file shows where state changes happen.",
+  "checklist": [
+    {
+      "name": "logic-exported",
+      "rule": "The rules that change game state, such as scoring, movement, collisions and ending a round, live in functions outside start that a test can reach: exported functions, or unexported helpers that an exported function calls. Event handlers and the animation loop inside start only call those functions, reset state with them, or record the score; they do not compute scores, positions or hits inline."
+    },
+    {
+      "name": "browser-apis-in-start-or-draw",
+      "rule": "Exported state functions do not use document, window, localStorage, requestAnimationFrame or a canvas context. Browser APIs appear only in start, or in a drawing function that takes the canvas context as a parameter and only draws."
+    }
+  ]
+}
