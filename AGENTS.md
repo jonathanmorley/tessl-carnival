@@ -70,7 +70,8 @@ src/
     midway.ts, render.ts  the 2D map, used where the browser can't do WebGL
   carnival/               shared base every game uses
     registry.ts           the CarnivalGame shape and the registry
-    scores.ts             recordScore, bestScore, topScores
+    scores.ts             bestScore, topScores and the score board
+    tickets.ts            recordScore, tickets, prizes and the daily challenge
     prizes.ts             prize tiers
     theme.ts              colours, fonts and sizes
   games/

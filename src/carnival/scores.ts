@@ -5,12 +5,12 @@ export interface ScoreEntry {
   at: number;
 }
 
-type ScoreStorage = Pick<Storage, 'getItem' | 'setItem'>;
+export type ScoreStorage = Pick<Storage, 'getItem' | 'setItem'>;
 
 const STORAGE_KEY = 'tessl-carnival:scores';
 const MAX_ENTRIES_PER_GAME = 50;
 
-function memoryStorage(): ScoreStorage {
+export function memoryStorage(): ScoreStorage {
   const memory = new Map<string, string>();
   return {
     getItem: (key) => memory.get(key) ?? null,
@@ -63,7 +63,7 @@ export function createScoreBoard(storage: ScoreStorage, now: () => number = Date
   return { record, best, top };
 }
 
-function browserStorage(): ScoreStorage {
+export function browserStorage(): ScoreStorage {
   try {
     return window.localStorage;
   } catch {
@@ -74,7 +74,7 @@ function browserStorage(): ScoreStorage {
 
 const board = createScoreBoard(browserStorage());
 
-/** Every game reports its final score through here. */
-export const recordScore = board.record;
+/** Records a score without paying out tickets; games use recordScore from the carnival. */
+export const recordBoardScore = board.record;
 export const bestScore = board.best;
 export const topScores = board.top;
